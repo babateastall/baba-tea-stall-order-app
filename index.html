@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6b3f20">
+<title>Baba Tea Stall - Order</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#fff8ef;color:#2b1a10}
+header{background:#6b3f20;color:white;padding:18px;text-align:center;position:sticky;top:0;z-index:3}
+h1{margin:0;font-size:25px}.sub{opacity:.9;margin-top:5px}
+main{max-width:620px;margin:auto;padding:14px}
+.card{background:white;border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 2px 10px #0001}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.item b{font-size:17px}.price{font-weight:bold}
+button{border:0;border-radius:10px;padding:10px 14px;background:#6b3f20;color:white;font-weight:bold}
+.qty{display:flex;align-items:center;gap:8px}.qty button{padding:6px 10px}.qty span{min-width:22px;text-align:center}
+input,textarea{width:100%;padding:12px;margin-top:7px;border:1px solid #ddd;border-radius:10px;font-size:15px}
+#total{font-size:21px;font-weight:bold}.order{width:100%;font-size:17px;padding:14px;background:#178b45}
+.small{font-size:13px;color:#666}.empty{color:#777;text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>☕ Baba Tea Stall</h1>
+<div class="sub">Online Order</div>
+</header>
+<main>
+<div id="menu"></div>
+<div class="card">
+<h3>📍 Order Details</h3>
+<input id="name" placeholder="आपका नाम">
+<input id="phone" placeholder="मोबाइल नंबर" inputmode="tel">
+<textarea id="address" rows="3" placeholder="डिलीवरी/लोकेशन"></textarea>
+</div>
+<div class="card">
+<div>कुल ऑर्डर: <span id="total">₹0</span></div>
+<p class="small">Order दबाने पर WhatsApp पर ऑर्डर भेजने के लिए WhatsApp खुलेगा।</p>
+<button class="order" onclick="placeOrder()">📲 Order on WhatsApp</button>
+</div>
+</main>
+<script>
+const menu=[
+["Special Chai",15],["Kulhad Chai",20],["Coffee",20],["Chowmein",50],
+["Aloo Chole",40],["Pani Puri",30],["Poha",20],["Bread Pakoda",10],
+["Bedai",30],["Pakode",30]
+];
+const cart={};
+function render(){
+let h="";
+menu.forEach(([n,p],i)=>{
+let q=cart[i]||0;
+h+=`<div class="card item"><div><b>${n}</b><div class="price">₹${p}</div></div>
+<div class="qty"><button onclick="change(${i},-1)">−</button><span>${q}</span><button onclick="change(${i},1)">+</button></div></div>`;
+});
+document.getElementById("menu").innerHTML=h;
+updateTotal();
+}
+function change(i,d){cart[i]=Math.max(0,(cart[i]||0)+d);render()}
+function updateTotal(){
+let total=0; menu.forEach(([n,p],i)=>total+=(cart[i]||0)*p);
+document.getElementById("total").textContent="₹"+total;
+}
+function placeOrder(){
+let lines=[],total=0;
+menu.forEach(([n,p],i)=>{let q=cart[i]||0;if(q){lines.push(`${n} x ${q} = ₹${q*p}`);total+=q*p}});
+if(!lines.length){alert("पहले कोई item चुनिए।");return}
+let name=document.getElementById("name").value.trim();
+let phone=document.getElementById("phone").value.trim();
+let address=document.getElementById("address").value.trim();
+if(!name||!phone||!address){alert("नाम, मोबाइल और लोकेशन भरिए।");return}
+let msg=`*Baba Tea Stall - New Order*%0A%0A${encodeURIComponent(lines.join("\n"))}%0A%0A*Total: ₹${total}*%0Aनाम: ${encodeURIComponent(name)}%0Aमोबाइल: ${encodeURIComponent(phone)}%0Aलोकेशन: ${encodeURIComponent(address)}`;
+window.open("https://wa.me/917440872021?text="+msg,"_blank");
+}
+render();
+</script>
+</body>
+</html>
