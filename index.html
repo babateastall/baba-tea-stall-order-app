@@ -35,11 +35,22 @@ input,textarea{width:100%;padding:12px;margin-top:7px;border:1px solid #ddd;bord
 .delivery-icon{font-size:30px}.delivery-info{flex:1}.delivery-title{font-size:17px;font-weight:800;color:#6b3f20}.delivery-note{font-size:12px;color:#777;margin-top:3px}.delivery-price{font-size:24px;font-weight:900;color:#d35400;white-space:nowrap}
 @media(max-width:520px){#menu{grid-template-columns:1fr 1fr}.item-photo{height:135px}.item{min-height:235px}.item-body{padding:9px}.item b{font-size:15px}}
 @media(max-width:360px){#menu{grid-template-columns:1fr}.item-photo{height:170px}}
+
+#babaSplash{position:fixed;inset:0;z-index:9999;background:#251309;display:flex;align-items:center;justify-content:center;transition:opacity .45s ease,visibility .45s ease;}
+#babaSplash.hide{opacity:0;visibility:hidden;pointer-events:none;}
+#babaSplash .splash-box{text-align:center;color:#fff;width:88%;max-width:430px;}
+#babaSplash img{width:min(62vw,260px);height:min(62vw,260px);object-fit:cover;border-radius:50%;border:4px solid #eab12d;box-shadow:0 10px 35px #0008;}
+#babaSplash h2{margin:22px 0 2px;font-size:36px;letter-spacing:2px;font-weight:900;}
+#babaSplash .tea-stall{color:#ffc125;font-size:25px;font-weight:900;letter-spacing:1px;}
+#babaSplash .tagline{margin-top:18px;font-size:17px;opacity:.95;}
+#babaSplash .loading{margin:28px auto 0;width:150px;height:4px;background:#56321d;border-radius:5px;overflow:hidden;}
+#babaSplash .loading i{display:block;width:45%;height:100%;background:#ffc125;border-radius:5px;animation:splashLoad 1.2s infinite ease-in-out;}
+@keyframes splashLoad{0%{transform:translateX(-100%)}100%{transform:translateX(330%)}}
 </style>
 
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#8B4513">
-<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
@@ -48,6 +59,16 @@ if ('serviceWorker' in navigator) {
 
 </head>
 <body>
+<div id="babaSplash" aria-label="Baba Tea Stall loading">
+  <div class="splash-box">
+    <img src="icon-512.png" alt="Baba Tea Stall">
+    <h2>BABA</h2>
+    <div class="tea-stall">TEA STALL</div>
+    <div class="tagline">Chai • Snacks • Desi Swad</div>
+    <div class="loading"><i></i></div>
+  </div>
+</div>
+
 <header>
 <h1>☕ Baba Tea Stall</h1>
 <div class="sub">Online Order</div>
@@ -230,6 +251,10 @@ let msg=`*Baba Tea Stall - New Order*%0A%0A${encodeURIComponent(lines.join("\n")
 window.open("https://wa.me/917440872021?text="+msg,"_blank");
 }
 render();
+</script>
+
+<script>
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('babaSplash')?.classList.add('hide'),900);});
 </script>
 </body>
 </html>
