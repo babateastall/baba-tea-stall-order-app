@@ -104,7 +104,22 @@ if ('serviceWorker' in navigator) {
 </div>
 </main>
 <script>
-const menuItems=[
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCHrLvNiMhTsDdz0UFcWIBatmBymDeUR7k",
+  authDomain: "baba-tea-stall.firebaseapp.com",
+  projectId: "baba-tea-stall",
+  appId: "1:298419832106:web:02fd00a6975c23dc780a53"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const orderDb = firebase.firestore();
+  
+  const menuItems=[
 ["दाल फ्राई",60],
 ["दाल तड़का",60],
 ["दाल मखनी",80],
@@ -284,18 +299,70 @@ function payNow(){
  window.location.href=upi;
 }
 
-function placeOrder(){
-let lines=[],subtotal=0;
-menuItems.forEach(([n,p],i)=>{let q=cart[i]||0;if(q){lines.push(`${n} x ${q} = ₹${q*p}`);subtotal+=q*p}});
-let total=subtotal;
-if(!lines.length){alert("पहले कोई item चुनिए।");return}
-let name=document.getElementById("name").value.trim();
-let phone=document.getElementById("phone").value.trim();
-let address=document.getElementById("address").value.trim();
-if(!name||!phone||!address){alert("नाम, मोबाइल और लोकेशन भरिए।");return}
-let msg=`*Baba Tea Stall - New Order*%0A%0A${encodeURIComponent(lines.join("\n"))}%0A%0A*Total: ₹${total}*%0A🎉 *Delivery FREE*%0Aनाम: ${encodeURIComponent(name)}%0Aमोबाइल: ${encodeURIComponent(phone)}%0Aलोकेशन: ${encodeURIComponent(address)}`;
-window.open("https://wa.me/917440872021?text="+msg,"_blank");
+
+async function placeOrder() {
+  let lines = [];
+  let subtotal = 0;
+
+  menuItems.forEach(([n, p], i) => {
+    let q = cart[i] || 0;
+    if (q > 0) {
+      lines.push(`${n} x ${q} = ₹${q * p}`);
+      subtotal += q * p;
+    }
+  });
+
+  if (!lines.length) {
+    alert("पहले कोई item चुनिए");
+    return;
+  }
+
+  const total = subtotal;
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+
+  if (!name || !phone || !address) {
+    alert("कृपया नाम, मोबाइल और पता भरें");
+    return;
+  }
+
+  const order = {
+    name: name,
+    phone: phone,
+    address: address,
+    items: lines,
+    total: total,
+    status: "New",
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  try {
+    const docRef = await orderDb.collection("Orders").add(order);
+
+    const msg =
+      "Baba Tea Stall - New Order\n" +
+      "Order ID: " + docRef.id + "\n" +
+      "Name: " + name + "\n" +
+      "Mobile: " + phone + "\n" +
+      "Address: " + address + "\n\n" +
+      lines.join("\n") +
+      "\nTotal: ₹" + total;
+
+    alert("Order Firebase mein save ho gaya!");
+
+    window.open(
+      "https://wa.me/917440872021?text=" +
+      encodeURIComponent(msg),
+      "_blank"
+    );
+
+  } catch (error) {
+    console.error("Order save error:", error);
+    alert("Order save nahi hua. Firebase Rules aur collection check karni hogi.");
+  }
 }
+  
 render();
 </script>
 
