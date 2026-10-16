@@ -281,7 +281,7 @@ const embeddedPhotos=[
  }
 });
 document.getElementById("menu").innerHTML=h;
-updateTotal();
+updateTotal();console.log("Menu rendered:", menuItems.length);
 }
 function change(i,d){cart[i]=Math.max(0,(cart[i]||0)+d);render()}
 function updateTotal(){
