@@ -80,7 +80,7 @@ try {
     if (!user) return;
 
     document.getElementById("status").textContent = "Firebase se orders check ho rahe hain...";
-    unsubscribe = db.collection("order").onSnapshot(snapshot => {
+    unsubscribe = db.collection("orders").onSnapshot(snapshot => {
       const container = document.getElementById("orders");
       container.replaceChildren();
       if (snapshot.empty) {
