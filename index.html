@@ -340,7 +340,7 @@ async function placeOrder() {
   };
 
   try {
-    const docRef = await orderDb.collection("Orders").add(order);
+    const docRef = await orderDb.collection("orders").add(order);
 
     const msg =
       "Baba Tea Stall - New Order\n" +
