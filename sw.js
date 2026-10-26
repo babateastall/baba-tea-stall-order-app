@@ -1,4 +1,4 @@
-const CACHE_NAME = "baba-tea-stall-v1";
+const CACHE_NAME = "baba-tea-stall-v2";
 
 const FILES_TO_CACHE = [
   "./",
